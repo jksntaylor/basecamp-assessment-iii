@@ -35,7 +35,7 @@ class Board extends React.Component {
               {this.renderSquare(4)}
               {this.renderSquare(5)}
         </div>
-        <div className="board-row">
+        <div className="board-row board-row-bottom">
               {this.renderSquare(6)}
               {this.renderSquare(7)}
               {this.renderSquare(8)}
@@ -86,25 +86,42 @@ class Game extends React.Component {
     const current = history[this.state.stepNumber];
     const winner = calculateWinner(current.squares);
       
-    const moves = history.map((step, move) => {
-        const desc = move ?
-            'GO TO MOVE ' + move :
-            'NEW GAME';
-        
-        if (move===0) {
-            return (
-              <li key={move}>
-                <button className="time start" onClick={() => this.jumpTo(move)}>{desc}</button>
-              </li>
-            );
-        } else {
-            return (
-             <li key={move}>
-                <button className="time moves" onClick={() => this.jumpTo(move)}>{desc}</button>
-              </li>
-            );        
-        }
-    });
+//    const moves = history.map((step, move) => {
+//        const desc = move ?
+//            'MOVE ' + move :
+//            'NEW GAME';
+//        
+//        if (move===0) {
+//            return (
+//                <button className="time start" onClick={() => this.jumpTo(move)}>{desc}</button>
+//            );
+//        } else if (move <=4) {
+//             return (
+//                <button className="time moves left" onClick={() => this.jumpTo(move)}>{desc}</button>
+//            );                                   
+//        } else {
+//            return (
+//                <button className="time moves right" onClick={() => this.jumpTo(move)}>{desc}</button>
+//            );        
+//        }
+//    });
+      
+            let left = []
+            let middle = []
+            let right = []
+            let start = ''
+            history.forEach((e,i) => {
+                if (i===0) {
+                    start = <button className="time start" onClick={() => this.jumpTo(i)}>NEW GAME</button>
+                } else if (i<4) {
+                    left.push(<button className="time left" onClick={() => this.jumpTo(i)}>MOVE {i}</button>)
+                } else if (i<7) {
+                    middle.push(<button className="time  middle" onClick={() => this.jumpTo(i)}>MOVE {i}</button>)    
+                } else {
+                    right.push(<button className="time  right" onClick={() => this.jumpTo(i)}>MOVE {i}</button>)            
+                }
+            })
+            
       let status;
       if (winner) {
           status = 'Winner: ' + winner;
@@ -114,15 +131,31 @@ class Game extends React.Component {
 
     return (
       <div className="game">
-        <div className="game-board">
+        <div className="game-component game-board">
           <Board 
             squares={current.squares}
         onClick={(i) => this.handleClick(i)}
         />
         </div>
-        <div className="game-info">
+        <div className="game-component game-info">
           <div className="winner">{status}</div>
-          <ol>{moves}</ol>
+          <div>
+                    <div className="start">
+                        {start}
+                    </div>
+
+                    <div className="container">
+                        <div className="moves">
+                            {left}
+                        </div>
+                            {middle.length?
+                             <div className="moves">{middle}</div>
+                            : null}
+                            {right.length ? 
+                             <div className="moves">{right}</div> 
+                            : null}
+                    </div>
+                </div>
         </div>
       </div>
     );
