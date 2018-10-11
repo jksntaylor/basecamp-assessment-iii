@@ -5,18 +5,33 @@ import './index.css';
 
 
 function Square(props) {
+    //z - last step. if props.active === true, then set a style or class here that will make this individual button be highlighted
+    var appliedClass = "square"
+    if(props.active) {
+        appliedClass = "square active"
+    }
     return (
-        <button className="square" onClick={props.onClick}>
+        <button className={appliedClass} onClick={props.onClick}>
             {props.value}
         </button>
     );
 }
 
 class Board extends React.Component { 
+    //z - Board will have access to props.indexes
   renderSquare(i) {
+      //z - for each time this function is called, i will be an index so you will want to loop through this.props.indexes to check and see if the passed in i index matches any of the indexes coming from props. if so you have a winning match. 
+      //z - pass a prop down to the square component called active initially set to false. If i passed in matches a winning index then set that variable to true
+    let active = false;
+    for(var j = 0; j < this.props.indexes.length; j++) {
+        if(this.props.indexes[j] === i) {
+            active = true
+        }
+    }
     return ( 
         <Square 
             value={this.props.squares[i]}
+            active={active}
             onClick={() => this.props.onClick(i)}
         />
     );
@@ -61,7 +76,8 @@ class Game extends React.Component {
       const history = this.state.history.slice(0, this.state.stepNumber + 1);
       const current = history[history.length - 1];
       const squares = current.squares.slice();
-      if (calculateWinner(squares) || squares[i]) {
+      let obj = calculateWinner(squares) 
+      if (obj.type || squares[i]) {
           return;
       }
       squares[i] = this.state.xIsNext ? 'X' : 'O';
@@ -84,8 +100,10 @@ class Game extends React.Component {
   render() {
     const history = this.state.history;
     const current = history[this.state.stepNumber];
+//    console.log(current.squares)
     const winner = calculateWinner(current.squares);
-      
+    //Z - take winner.indexes and pass it to the Board component via props
+    
 //    const moves = history.map((step, move) => {
 //        const desc = move ?
 //            'MOVE ' + move :
@@ -123,8 +141,9 @@ class Game extends React.Component {
             })
             
       let status;
-      if (winner) {
-          status = 'Winner: ' + winner;
+      if (winner.type) {
+          
+          status = 'Winner: ' + winner.type;
       } else {
           status = 'Next player: ' + (this.state.xIsNext ? 'X' : 'O');
       }
@@ -134,6 +153,7 @@ class Game extends React.Component {
         <div className="game-component game-board">
           <Board 
             squares={current.squares}
+            indexes={winner.indexes}
         onClick={(i) => this.handleClick(i)}
         />
         </div>
@@ -183,8 +203,15 @@ function calculateWinner(squares) {
     for (let i = 0; i < lines.length; i++) {
         const [a,b,c] = lines[i];
         if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
-            return squares[a];
+//            return squares[a];
+            return {
+                indexes: [a, b, c],
+                type: squares[a]
+            }
         }
     }
-    return null;
+    return {
+        indexes: [],
+        type: ''
+    };
 }

@@ -71,11 +71,6 @@ ol, .time {
   outline: none;
 }
 
-.square:hover,
-.square:active {
-    background-color: #C17458;
-}
-
 .kbd-navigation .square:focus {
   background: #ddd;
 }
@@ -169,6 +164,11 @@ h1 {
 #welcome {
     display: flex;
     justify-content: center;
+}
+
+.active {
+    color: #887e87;
+    background-image: radial-gradient(white 60%, gray);
 }
 
 /*MEDIA QUERIES*/
