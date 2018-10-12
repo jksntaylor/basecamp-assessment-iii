@@ -3,7 +3,6 @@ import ReactDOM from 'react-dom';
 import './index.css';
 
 
-
 function Square(props) {
     //z - last step. if props.active === true, then set a style or class here that will make this individual button be highlighted
     var appliedClass = "square"
@@ -18,6 +17,13 @@ function Square(props) {
 }
 
 class Board extends React.Component { 
+//    constructor(props) {
+//        super()
+//        console.log(props)
+//        this.state = {
+//            selectedSquare: props.squares[0]
+//        }
+//    }
     //z - Board will have access to props.indexes
   renderSquare(i) {
       //z - for each time this function is called, i will be an index so you will want to loop through this.props.indexes to check and see if the passed in i index matches any of the indexes coming from props. if so you have a winning match. 
@@ -62,7 +68,7 @@ class Board extends React.Component {
 
 class Game extends React.Component {
   constructor(props) {
-      super(props);
+      super(props);  /*what does this mean*/
       this.state = {
           history: [{
               squares: Array(9).fill(null),
@@ -71,7 +77,7 @@ class Game extends React.Component {
           xIsNext: true,
       };
   }
-  
+    
   handleClick(i) {
       const history = this.state.history.slice(0, this.state.stepNumber + 1);
       const current = history[history.length - 1];
@@ -144,8 +150,10 @@ class Game extends React.Component {
       if (winner.type) {
           
           status = 'Winner: ' + winner.type;
-      } else {
+      } else if (this.state.stepNumber < 9){
           status = 'Next player: ' + (this.state.xIsNext ? 'X' : 'O');
+      } else {
+          status = 'Draw'
       }
 
     return (
